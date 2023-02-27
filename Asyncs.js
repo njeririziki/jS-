@@ -11,35 +11,6 @@
   many*/ 
 
 
-
-// Asnchronous includes setTimeout(callback,ms) is not render blocking because it queues a task
-
-// fetch use test apis like
-   async function getData (){
-    //use fetch api
-    //    const request= await axios.get( 'https://randomuser.me/api/',{
-    //        params:{
-    //            results:10,
-    //            inc:'name ,email,gender,phone, picture,cell,id,registered,login'
-    //        }
-    //    })
-      
-    //    const profiles = request.data.results;
-        
-    //    profiles.forEach(element => {
-    //        profile.push({
-    //           key: element.login.uuid,
-    //           name: `${element.name.first} ${element.name.last}`,
-    //           email: element.email,
-    //           phone: element.phone,
-    //           avatar: element.picture.medium,
-    //           date: element.registered.date
-
-    //        })
-           
-    //    });
-    }
-
 /** Micro tasks- these are promises. Are run when there's nothng in the callstack
  * 
  */
@@ -64,17 +35,21 @@ async function fetchData() {
 
 
 //callbacks are arguments to another functions
-function callBackFunc(smt){
-console.log(`in the callBackFunc ${smt}`)
-}
 function callingCallBack(a,b, theFun){
- a+=b
- console.log(a)
- theFun(a)
+  theFun(a,b)
+ }
+function callBackFunc(a,b){
+a+=b
+console.log(`in the callBackFunc ${a}`)
 }
 
 
+function callSubtract(a,b){
+  a-=b
+console.log(`in the callBackFunc ${a}`)
+}
 callingCallBack(5,8,callBackFunc)
+callingCallBack(5,8,callSubtract)
 
 //callback hell
 readFile('file.txt', function(err, data) {
@@ -92,6 +67,60 @@ readFile('file.txt', function(err, data) {
       console.log('File has been processed successfully.');
     });
   });
+});
+
+// Section 4 - NodeJS coding - (15 - 20 mins)
+// Is a trivial example of callback hell
+// Refactor the code for the better, using any techniques you are aware of
+
+const fs = require('fs');
+const path = process.argv[2];
+
+const readFile = path => new Promise((resolve, reject) => {
+  return fs.readFile(path, (err, buffer) => {
+    if (err) {
+      return reject('Error trying to get stats');
+    }
+    return resolve(buffer);
+  })
+})
+
+const getStats = path => new Promise((resolve, reject) => {
+  return fs.stat(path, (err, stats) => {
+    if (err) return reject('Error trying to get stats')
+    return resolve(stats)
+  })
+})
+
+const ensureFileExists = path => new Promise((resolve, reject) => {
+  return fs.exists(path, (exists) => {
+    if (exists) resolve(path)
+    else reject('File does not exist')
+  })
+})
+
+async function getFileContents(path, callback) {
+  try {
+    const filePath = await ensureFileExists(path)
+    const stats = await getStats(filePath)
+    if (stats.size > 0) {
+      return callback(null, await readFile(path))
+    } else {
+      return callback(new Error('File exists but there is no content'));
+    }
+  } catch (error) {
+    console.log(error)
+    callback(error.message)
+  }
+}
+
+
+getFileContents(path, (err, contents) => {
+  if (err) {
+    console.error(`There was an error getting contents for ${path}`, err);
+    return;
+  }
+  console.info('File was found and the contents were loaded');
 });
 
 

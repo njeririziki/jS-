@@ -6,16 +6,9 @@ const useFetchData = () => {
          getData(endpoint,params){
            return new Promise(async(success,reject)=>{
              try{
-                await axios.get( endpoint,{
-                           params
-                       })
-                       .then(res=>{
-                        success(res.data)
-                       })
-                       .catch(err=>{
-                        console.log(err);
-                        reject(err)
-                       })
+                 axios.get( endpoint,{params})
+                       .then(res=> success(res.data))
+                       .catch(err=> reject(err))
              }catch(error) {
               console.error(error);
              }
@@ -26,15 +19,3 @@ const useFetchData = () => {
  
 export default useFetchData;
 
-
-// async function fetchData() {
-//     try {
-//       const response = await fetch('https://api.example.com/data');
-//       const data = await response.json();
-//       console.log(data);
-//     } catch (error) {
-//       console.error(error);
-//     }
-//   }
-  
-//   fetchData();

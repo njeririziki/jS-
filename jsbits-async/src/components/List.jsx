@@ -52,19 +52,15 @@ const PlainList = ({title,data}) => {
       
          </li>
          {listData.map((items,index)=>(
-         <li className='flex flex-col md:flex-row md:items-center md:justify-between p-4 border-b' 
+         <li className='flex flex-col md:flex-row md:items-center md:justify-between p-4 border-b gap-6' 
          key={index}  >
-           <div className='flex'>
-           <div className='rounded-full  w-8 h-8 mr-4'>
-           {items.icon}
-          </div> 
-          <div>
+          
          <h3 className='font-semibold text-base text-gray-600 dark:text-gray-300 '>{items.col1}</h3>
        
          <h3 className={styles.smalltext}>{items.col2}</h3>
   
-         </div>
-           </div>
+        
+         
  
          <h3 className='text-right  text-thin font-semibold mr-4 dark:text-gray-200 '>{items.col3}</h3>
          </li>
